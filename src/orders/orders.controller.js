@@ -12,15 +12,16 @@ function list(req, res) {
 }
 
 function create(req, res, next) {
-    const { data: { deliverTo, mobileNumber, status, dishes } = {} } = req.body
+    const { data: { deliverTo, mobileNumber, status, dishes, quantity } = {} } = req.body
+    
     const newOrder = {
-        id: nextId(),
-        deliverTo: deliverTo,
-        mobileNumber: mobileNumber,
-        status: status,
-        dishes: dishes,
+        id: orders.length +1,
+        deliverTo,
+        mobileNumber,
+        status,
+        dishes,
+        quantity,
     }
-
 
     if (!deliverTo) {
         return next({
@@ -41,11 +42,12 @@ function create(req, res, next) {
             message: `There are no dishes ${req.params.orderId}`
         });
     }
+    
     for (let i = 0; i < dishes.length; i++) {
-        if (!dishes[i].quantity || dishes[i].quantity < 0 || !Number.isInteger(dishes[i].quantity)) {
+        if (!dishes[i].quantity || dishes[i].quantity < 0 || typeof dishes[i].quantity !== "number") {
             return next({
                 status: 400,
-                message: `Dish ${index} must have a quantity that is an integer greater than 0`
+                message: `Dish ${i} must have a quantity that is an integer greater than 0`
             })
         }
     }
@@ -61,13 +63,13 @@ function create(req, res, next) {
 }
 
 function read(req, res, next) {
-    const { orderId } = req.params
+    const { orderId } = req.params.orderId
     const orders = orders.find(order => order.id === (orderId))
     res.json({ data: findOrder })
 }
 
 function update(req, res, next) {
-    const { orderId } = req.params
+    const { orderId } = req.params.orderId
     const order = orders.find(order => order.id === (orderId))
     const { data: { deliverTo, mobileNumber, status, dishes } = {} } = req.body
 
@@ -75,26 +77,26 @@ function update(req, res, next) {
     if (!deliverTo) {
         return next({
             status: 400,
-            message: "Order must include a deliverTo"
+            message: `deliverTo is empty ${req.params.orderId}`
         })
     }
     if (!mobileNumber) {
         return next({
             status: 400,
-            message: "Order must include a mobileNumber"
+            message: `mobileNumber is empty ${req.params.orderId}`
         });
     }
     if (!dishes || dishes.length === 0 || !Array.isArray(dishes)) {
         return next({
             status: 400,
-            message: "Order must include a dish",
+            message: `There are no dishes ${req.params.orderId}`,
         });
     }
     for (let i = 0; i < dishes.length; i++) {
         if (!dishes[i].quantity || dishes[i].quantity < 0 || typeof dishes[i].quantity !== "number") {
             return next({
                 status: 400,
-                message: `Dish ${index} must have a quantity that is an integer greater than 0`
+                message: `Dish ${i} must have a quantity that is an integer greater than 0`
             })
         }
     }
@@ -104,10 +106,10 @@ function update(req, res, next) {
             message: `Order id does not match route id. Order: ${id}, Route: ${orderId}.`
         })
     }
-    if (!status) {
+    if (!status || status === "invalid") {
         return next({
             status: 400,
-            message: `Order must have a status of pending, preparing, out-for-delivery, delivered, ${status}`
+            message: `status is invalid ${req.params.orderId}`
         })
     }
     if (status === "delivered") {
@@ -116,6 +118,7 @@ function update(req, res, next) {
             message: "A delivered order cannot be changed"
         })
     }
+    
 if (!quantity) {
         return next({
             status: 400,
@@ -132,7 +135,7 @@ if (!quantity) {
 
 function orderExists(req, res, next) {
     const { orderId } = req.params
-    const order = orders.find(order => order.id === (orderId))
+    const order = orders.find((order) => order.id === orderId)
     if (order) {
         next()
     }
@@ -140,7 +143,7 @@ function orderExists(req, res, next) {
 }
 
 function destroy(req, res, next) {
-    const { orderId } = req.params
+    const { orderId } = req.params.orderId
     if (res.locals.order.status !== "pending") {
         return next({
             status: 400,

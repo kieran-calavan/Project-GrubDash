@@ -65,7 +65,7 @@ function create(req, res, next) {
             })
         }
     }
-   
+
 
     orders.push(newOrder)
     res.status(201).json({ data: newOrder })
@@ -79,58 +79,58 @@ function read(req, res, next) {
 
 function update(req, res, next) {
     const foundOrder = res.locals.order;
-    const { data: { deliverTo, mobileNumber, dishes, quantity, status, id, price} = {} } = req.body;
-    
+    const { data: { deliverTo, mobileNumber, dishes, quantity, status, id, price } = {} } = req.body;
+
     if (id && id != req.params.orderId) {
-      return next({
-        status: 400,
-        message: `id does not match route id. Order: ${id}, Route: ${req.params.orderId}.`,
-      });
+        return next({
+            status: 400,
+            message: `id does not match route id. Order: ${id}, Route: ${req.params.orderId}.`,
+        });
     }
     if (!mobileNumber) {
-      return next({
-        status: 400,
-        message: `mobileNumber is empty ${req.params.orderId}`,
-      });
+        return next({
+            status: 400,
+            message: `mobileNumber is empty ${req.params.orderId}`,
+        });
     }
     if (!deliverTo) {
-      return next({
-        status: 400,
-        message: `deliverTo is empty ${req.params.orderId}`,
-      });
+        return next({
+            status: 400,
+            message: `deliverTo is empty ${req.params.orderId}`,
+        });
     }
     if (!dishes || !Array.isArray(dishes) || dishes.length === 0) {
-      return next({
-        status: 400,
-        message: `There are no dishes ${req.params.orderId}`,
-      }); 
+        return next({
+            status: 400,
+            message: `There are no dishes ${req.params.orderId}`,
+        });
     }
     if (status === "invalid" || !status) {
-      return next({
-        status: 400,
-        message: `status is invalid ${req.params.orderId}`,
-      });
-    }
-    
-      for (let i = 0; i < dishes.length; i++) {
-      if (!dishes[i].quantity || dishes[i].quantity < 0 || typeof dishes[i].quantity !== "number") {
         return next({
-          status: 400,
-          message:  `Dish ${i} must have a quantity that is an integer greater than 0`,
-      });
-      }
+            status: 400,
+            message: `status is invalid ${req.params.orderId}`,
+        });
+    }
+
+    for (let i = 0; i < dishes.length; i++) {
+        if (!dishes[i].quantity || dishes[i].quantity < 0 || typeof dishes[i].quantity !== "number") {
+            return next({
+                status: 400,
+                message: `Dish ${i} must have a quantity that is an integer greater than 0`,
+            });
+        }
     }
     foundOrder.deliverTo = deliverTo
     foundOrder.mobileNumber = mobileNumber
     foundOrder.dishes = dishes
     foundOrder.quantity = quantity
-  
+
     res
-      .json({
-        data: foundOrder
-      })
-  }
-  
+        .json({
+            data: foundOrder
+        })
+}
+
 
 function destroy(req, res, next) {
     const { orderId } = req.params.orderId

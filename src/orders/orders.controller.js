@@ -65,21 +65,15 @@ function create(req, res, next) {
             })
         }
     }
-    if (!quantity) {
-        return next({
-            status: 400,
-            message: "quantity is required"
-        })
-    }
+   
 
     orders.push(newOrder)
     res.status(201).json({ data: newOrder })
 }
 
-
 function read(req, res, next) {
-    const { orderId } = req.params.orderId
-    const orders = orders.find(order => order.id === (orderId))
+    const { orderId } = req.params
+    const findOrder = orders.find(order => order.id === orderId)
     res.json({ data: findOrder })
 }
 
@@ -153,7 +147,7 @@ function destroy(req, res, next) {
             })
         }
     }
-    const orders = orders.find(order => order.id === (orderId))
+    const index = orders.findIndex(order => order.id === orderId)
     const deletedOrders = orders.splice(index, 1)
     res.sendStatus(204)
 }

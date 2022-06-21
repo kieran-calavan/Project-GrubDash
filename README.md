@@ -5,12 +5,13 @@ This is the backend for the Grubdash project for thinkful. It sets up routes and
 
 
 ## Installation
+
 Fork & clone the repository. |
 ---------------------------- |
 cd grubdash-project         |
 npm install                  |
-npm run start:server         |
-npm run start:react          |
+npm start       |
+Launch https://grubdash-front-end.vercel.app/
 
 ## Build Notes
 This application was built using React, JavaScript, HTML, Bootstrap for styling, & Jest/React Testing Library for testing.

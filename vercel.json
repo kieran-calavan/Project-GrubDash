@@ -2,10 +2,10 @@
     "version": 2,
     "name": "grubdash-project",
     "builds": [
-      { "src": "app.js", "use": "@vercel/node" }
+      { "src": "api.js", "use": "@vercel/node" }
     ],
     "routes": [
-      { "src": "/(.*)", "dest": "/app.js" }
+      { "src": "/(.*)", "dest": "/api.js" }
     ]
   }
   

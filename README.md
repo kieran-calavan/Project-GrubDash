@@ -11,7 +11,7 @@ Fork & clone the repository. |
 cd grubdash-project         |
 npm install                  |
 npm start       |
-Launch [https://grubdash-front-end.vercel.app/](https://grub-dash-front-end-ten.vercel.app/)
+Launch [https://grub-dash-front-end-ten.vercel.app/](https://grub-dash-front-end-ten.vercel.app/)
 
 ## Build Notes
 This application was built using React, JavaScript, HTML, Bootstrap for styling, & Jest/React Testing Library for testing.

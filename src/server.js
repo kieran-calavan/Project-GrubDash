@@ -2,7 +2,7 @@ const { PORT = 5000 } = process.env;
 
 const path = require("path");
 const app = require(path.resolve(
-  `${process.env.PORT || ""}`,
+  `${process.env.SOLUTION_PATH || ""}`,
   "src/app"
 ));
 
